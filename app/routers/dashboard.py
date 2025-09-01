@@ -7,6 +7,7 @@ from fastapi.templating import Jinja2Templates
 from pathlib import Path
 from sqlmodel import Session, select
 from sqlalchemy.orm import selectinload
+from fastapi.responses import StreamingResponse
 
 from ..db import get_session
 from ..models import Categoria, Transacao, Casa
@@ -91,4 +92,34 @@ def dashboard(
             "por_casa": por_casa_list,
         },
     )
+
+
+@router.get("/export.csv")
+def export_csv(
+    faixa: str = Query("mes"),
+    inicio: date | None = Query(None),
+    fim: date | None = Query(None),
+):
+    start, end = _compute_range(faixa, inicio, fim)
+    with get_session() as session:
+        transacoes = session.exec(
+            select(Transacao).where(Transacao.data >= start, Transacao.data <= end).order_by(Transacao.data)
+        ).all()
+        casas = {c.id: c.nome for c in session.exec(select(Casa)).all()}
+        categorias = {c.id: c.nome for c in session.exec(select(Categoria)).all()}
+
+    def gen():
+        yield "data,tipo,valor,casa,categoria,observacao\n"
+        for t in transacoes:
+            row = [
+                str(t.data),
+                t.tipo,
+                f"{t.valor:.2f}",
+                casas.get(t.casa_id, str(t.casa_id)),
+                categorias.get(t.categoria_id, str(t.categoria_id)),
+                (t.observacao or '').replace('\n',' ').replace('\r',' '),
+            ]
+            yield ",".join(row) + "\n"
+
+    return StreamingResponse(gen(), media_type="text/csv", headers={"Content-Disposition": "attachment; filename=transacoes.csv"})
 

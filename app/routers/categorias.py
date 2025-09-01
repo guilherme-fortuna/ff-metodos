@@ -36,3 +36,14 @@ def excluir_categoria(categoria_id: int):
             session.commit()
     return RedirectResponse(url="/categorias/", status_code=303)
 
+
+@router.post("/editar/{categoria_id}")
+def editar_categoria(categoria_id: int, nome: str = Form(...)):
+    with get_session() as session:
+        categoria = session.get(Categoria, categoria_id)
+        if categoria:
+            categoria.nome = nome.strip()
+            session.add(categoria)
+            session.commit()
+    return RedirectResponse(url="/categorias/", status_code=303)
+

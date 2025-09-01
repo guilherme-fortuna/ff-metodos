@@ -82,5 +82,35 @@
     </tbody>
   </table>
 </div>
+
+<div class="card">
+  <h3>Gráficos</h3>
+  <canvas id="chartCategoria" height="120"></canvas>
+  <canvas id="chartCasa" height="120" style="margin-top:16px"></canvas>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    (function(){
+      const catLabels = Object.keys({{ por_categoria | tojson | safe }});
+      const catData = Object.values({{ por_categoria | tojson | safe }});
+      new Chart(document.getElementById('chartCategoria').getContext('2d'), {
+        type: 'bar', data: { labels: catLabels, datasets: [{ label: 'Resultado por categoria', data: catData, backgroundColor: '#60a5fa' }]},
+        options: { plugins: { legend: { display: false } }, scales: { x: { ticks: { color:'#e5e7eb'}}, y:{ ticks:{ color:'#e5e7eb'}}}}
+      });
+
+      const casaLabels = {{ por_casa | map(attribute='nome') | list | tojson | safe }};
+      const casaData = {{ por_casa | map(attribute='total') | list | tojson | safe }};
+      new Chart(document.getElementById('chartCasa').getContext('2d'), {
+        type: 'bar', data: { labels: casaLabels, datasets: [{ label: 'Resultado por casa', data: casaData, backgroundColor: '#34d399' }]},
+        options: { plugins: { legend: { display: false } }, scales: { x: { ticks: { color:'#e5e7eb'}}, y:{ ticks:{ color:'#e5e7eb'}}}}
+      });
+    })();
+  </script>
+</div>
+
+<div class="card">
+  <a href="/export.csv?faixa={{ faixa }}&inicio={{ start }}&fim={{ end }}" target="_blank">
+    <button>Exportar CSV (intervalo atual)</button>
+  </a>
+</div>
 {% endblock %}
 

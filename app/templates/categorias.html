@@ -25,12 +25,23 @@
       {% for c in categorias %}
         <tr>
           <td>{{ c.nome }}</td>
-          <td>
+          <td style="display:flex; gap:8px;">
+            <button type="button" onclick="document.getElementById('edit-categoria-{{ c.id }}').showModal()">Editar</button>
             <form method="post" action="/categorias/excluir/{{ c.id }}" onsubmit="return confirm('Excluir categoria?');">
               <button type="submit">Excluir</button>
             </form>
           </td>
         </tr>
+        <dialog id="edit-categoria-{{ c.id }}">
+          <form method="post" action="/categorias/editar/{{ c.id }}">
+            <h3>Editar Categoria</h3>
+            <p><input type="text" name="nome" value="{{ c.nome }}" required /></p>
+            <div>
+              <button type="submit">Salvar</button>
+              <button type="button" onclick="this.closest('dialog').close()">Cancelar</button>
+            </div>
+          </form>
+        </dialog>
       {% endfor %}
     </tbody>
   </table>

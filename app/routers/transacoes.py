@@ -61,3 +61,27 @@ def excluir_transacao(transacao_id: int):
             session.commit()
     return RedirectResponse(url="/transacoes/", status_code=303)
 
+
+@router.post("/editar/{transacao_id}")
+def editar_transacao(
+    transacao_id: int,
+    data: date = Form(...),
+    tipo: str = Form(...),
+    valor: float = Form(...),
+    casa_id: int = Form(...),
+    categoria_id: int = Form(...),
+    observacao: str = Form("")
+):
+    with get_session() as session:
+        t = session.get(Transacao, transacao_id)
+        if t:
+            t.data = data
+            t.tipo = tipo
+            t.valor = valor
+            t.casa_id = casa_id
+            t.categoria_id = categoria_id
+            t.observacao = observacao.strip() or None
+            session.add(t)
+            session.commit()
+    return RedirectResponse(url="/transacoes/", status_code=303)
+
