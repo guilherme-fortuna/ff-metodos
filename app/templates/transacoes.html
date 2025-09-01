@@ -1,34 +1,54 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2>Transações</h2>
+<h2 class="text-2xl font-bold mb-4">Transações</h2>
 
-<div class="card">
-  <button onclick="document.getElementById('modal-transacao').showModal()">Nova transação</button>
-  <dialog id="modal-transacao">
-    <form method="post" action="/transacoes/criar">
-      <h3>Nova Transação</h3>
-      <p><label>Data <input type="date" name="data" required value="{{ now().date() }}"/></label></p>
-      <p><label>Tipo
-        <select name="tipo" required>
-          <option value="deposito">Depósito</option>
-          <option value="saque">Saque</option>
-        </select>
-      </label></p>
-      <p><label>Valor <input type="number" name="valor" step="0.01" min="0" required /></label></p>
-      <p><label>Casa
-        <select name="casa_id" required>
-          {% for c in casas %}<option value="{{ c.id }}">{{ c.nome }}</option>{% endfor %}
-        </select>
-      </label></p>
-      <p><label>Categoria
-        <select name="categoria_id" required>
-          {% for c in categorias %}<option value="{{ c.id }}">{{ c.nome }}</option>{% endfor %}
-        </select>
-      </label></p>
-      <p><label>Observação <input type="text" name="observacao" placeholder="Opcional"/></label></p>
-      <div>
-        <button type="submit">Salvar</button>
-        <button type="button" onclick="this.closest('dialog').close()">Cancelar</button>
+<div class="bg-bg-secondary border border-border-color rounded-lg p-4 mb-4">
+  <button onclick="document.getElementById('modal-transacao').showModal()" class="bg-btn-primary text-white border-none rounded-lg px-3 py-2 cursor-pointer">Nova transação</button>
+  <dialog id="modal-transacao" class="border-none rounded-lg p-0">
+    <form method="post" action="/transacoes/criar" class="p-4 bg-bg-secondary text-text-secondary border border-border-color min-w-80">
+      <h3 class="text-lg font-semibold mb-3">Nova Transação</h3>
+      <div class="space-y-3">
+        <div>
+          <label class="block mb-1">Data 
+            <input type="date" name="data" required value="{{ now().date() }}" class="w-full bg-bg-input text-text-secondary border border-border-color rounded-lg px-2 py-2"/>
+          </label>
+        </div>
+        <div>
+          <label class="block mb-1">Tipo
+            <select name="tipo" required class="w-full bg-bg-input text-text-secondary border border-border-color rounded-lg px-2 py-2">
+              <option value="deposito">Depósito</option>
+              <option value="saque">Saque</option>
+            </select>
+          </label>
+        </div>
+        <div>
+          <label class="block mb-1">Valor 
+            <input type="number" name="valor" step="0.01" min="0" required class="w-full bg-bg-input text-text-secondary border border-border-color rounded-lg px-2 py-2"/>
+          </label>
+        </div>
+        <div>
+          <label class="block mb-1">Casa
+            <select name="casa_id" required class="w-full bg-bg-input text-text-secondary border border-border-color rounded-lg px-2 py-2">
+              {% for c in casas %}<option value="{{ c.id }}">{{ c.nome }}</option>{% endfor %}
+            </select>
+          </label>
+        </div>
+        <div>
+          <label class="block mb-1">Categoria
+            <select name="categoria_id" required class="w-full bg-bg-input text-text-secondary border border-border-color rounded-lg px-2 py-2">
+              {% for c in categorias %}<option value="{{ c.id }}">{{ c.nome }}</option>{% endfor %}
+            </select>
+          </label>
+        </div>
+        <div>
+          <label class="block mb-1">Observação 
+            <input type="text" name="observacao" placeholder="Opcional" class="w-full bg-bg-input text-text-secondary border border-border-color rounded-lg px-2 py-2"/>
+          </label>
+        </div>
+        <div class="flex gap-2">
+          <button type="submit" class="bg-btn-primary text-white border-none rounded-lg px-3 py-2 cursor-pointer">Salvar</button>
+          <button type="button" onclick="this.closest('dialog').close()" class="bg-gray-600 text-white border-none rounded-lg px-3 py-2 cursor-pointer">Cancelar</button>
+        </div>
       </div>
     </form>
   </dialog>
@@ -38,52 +58,80 @@
   </script>
 </div>
 
-<div class="card">
-  <table>
+<div class="bg-bg-secondary border border-border-color rounded-lg p-4">
+  <table class="w-full border-collapse">
     <thead>
-      <tr><th>Data</th><th>Tipo</th><th>Valor</th><th>Casa ID</th><th>Categoria ID</th><th>Obs</th><th>Ações</th></tr>
+      <tr>
+        <th class="border-b border-border-color p-2 text-left">Data</th>
+        <th class="border-b border-border-color p-2 text-left">Tipo</th>
+        <th class="border-b border-border-color p-2 text-left">Valor</th>
+        <th class="border-b border-border-color p-2 text-left">Casa ID</th>
+        <th class="border-b border-border-color p-2 text-left">Categoria ID</th>
+        <th class="border-b border-border-color p-2 text-left">Obs</th>
+        <th class="border-b border-border-color p-2 text-left">Ações</th>
+      </tr>
     </thead>
     <tbody>
       {% for t in transacoes %}
         <tr>
-          <td>{{ t.data }}</td>
-          <td>{{ t.tipo }}</td>
-          <td class="{% if t.tipo=='saque' %}success{% else %}danger{% endif %}">R$ {{ '%.2f'|format(t.valor) }}</td>
-          <td>{{ t.casa_id }}</td>
-          <td>{{ t.categoria_id }}</td>
-          <td>{{ t.observacao or '' }}</td>
-          <td style="display:flex; gap:8px;">
-            <button type="button" onclick="document.getElementById('edit-transacao-{{ t.id }}').showModal()">Editar</button>
-            <form method="post" action="/transacoes/excluir/{{ t.id }}" onsubmit="return confirm('Excluir transação?');">
-              <button type="submit">Excluir</button>
+          <td class="border-b border-border-color p-2">{{ t.data }}</td>
+          <td class="border-b border-border-color p-2">{{ t.tipo }}</td>
+          <td class="border-b border-border-color p-2 {% if t.tipo=='saque' %}text-text-success{% else %}text-text-danger{% endif %}">R$ {{ '%.2f'|format(t.valor) }}</td>
+          <td class="border-b border-border-color p-2">{{ t.casa_id }}</td>
+          <td class="border-b border-border-color p-2">{{ t.categoria_id }}</td>
+          <td class="border-b border-border-color p-2">{{ t.observacao or '' }}</td>
+          <td class="border-b border-border-color p-2 flex gap-2">
+            <button type="button" onclick="document.getElementById('edit-transacao-{{ t.id }}').showModal()" class="bg-btn-primary text-white border-none rounded-lg px-3 py-2 cursor-pointer">Editar</button>
+            <form method="post" action="/transacoes/excluir/{{ t.id }}" onsubmit="return confirm('Excluir transação?');" class="inline">
+              <button type="submit" class="bg-red-600 text-white border-none rounded-lg px-3 py-2 cursor-pointer">Excluir</button>
             </form>
           </td>
         </tr>
-        <dialog id="edit-transacao-{{ t.id }}">
-          <form method="post" action="/transacoes/editar/{{ t.id }}">
-            <h3>Editar Transação</h3>
-            <p><label>Data <input type="date" name="data" required value="{{ t.data }}"/></label></p>
-            <p><label>Tipo
-              <select name="tipo" required>
-                <option value="deposito" {% if t.tipo=='deposito' %}selected{% endif %}>Depósito</option>
-                <option value="saque" {% if t.tipo=='saque' %}selected{% endif %}>Saque</option>
-              </select>
-            </label></p>
-            <p><label>Valor <input type="number" name="valor" step="0.01" min="0" required value="{{ '%.2f'|format(t.valor) }}"/></label></p>
-            <p><label>Casa
-              <select name="casa_id" required>
-                {% for c in casas %}<option value="{{ c.id }}" {% if c.id==t.casa_id %}selected{% endif %}>{{ c.nome }}</option>{% endfor %}
-              </select>
-            </label></p>
-            <p><label>Categoria
-              <select name="categoria_id" required>
-                {% for c in categorias %}<option value="{{ c.id }}" {% if c.id==t.categoria_id %}selected{% endif %}>{{ c.nome }}</option>{% endfor %}
-              </select>
-            </label></p>
-            <p><label>Observação <input type="text" name="observacao" value="{{ t.observacao or '' }}"/></label></p>
-            <div>
-              <button type="submit">Salvar</button>
-              <button type="button" onclick="this.closest('dialog').close()">Cancelar</button>
+        <dialog id="edit-transacao-{{ t.id }}" class="border-none rounded-lg p-0">
+          <form method="post" action="/transacoes/editar/{{ t.id }}" class="p-4 bg-bg-secondary text-text-secondary border border-border-color min-w-80">
+            <h3 class="text-lg font-semibold mb-3">Editar Transação</h3>
+            <div class="space-y-3">
+              <div>
+                <label class="block mb-1">Data 
+                  <input type="date" name="data" required value="{{ t.data }}" class="w-full bg-bg-input text-text-secondary border border-border-color rounded-lg px-2 py-2"/>
+                </label>
+              </div>
+              <div>
+                <label class="block mb-1">Tipo
+                  <select name="tipo" required class="w-full bg-bg-input text-text-secondary border border-border-color rounded-lg px-2 py-2">
+                    <option value="deposito" {% if t.tipo=='deposito' %}selected{% endif %}>Depósito</option>
+                    <option value="saque" {% if t.tipo=='saque' %}selected{% endif %}>Saque</option>
+                  </select>
+                </label>
+              </div>
+              <div>
+                <label class="block mb-1">Valor 
+                  <input type="number" name="valor" step="0.01" min="0" required value="{{ '%.2f'|format(t.valor) }}" class="w-full bg-bg-input text-text-secondary border border-border-color rounded-lg px-2 py-2"/>
+                </label>
+              </div>
+              <div>
+                <label class="block mb-1">Casa
+                  <select name="casa_id" required class="w-full bg-bg-input text-text-secondary border border-border-color rounded-lg px-2 py-2">
+                    {% for c in casas %}<option value="{{ c.id }}" {% if c.id==t.casa_id %}selected{% endif %}>{{ c.nome }}</option>{% endfor %}
+                  </select>
+                </label>
+              </div>
+              <div>
+                <label class="block mb-1">Categoria
+                  <select name="categoria_id" required class="w-full bg-bg-input text-text-secondary border border-border-color rounded-lg px-2 py-2">
+                    {% for c in categorias %}<option value="{{ c.id }}" {% if c.id==t.categoria_id %}selected{% endif %}>{{ c.nome }}</option>{% endfor %}
+                  </select>
+                </label>
+              </div>
+              <div>
+                <label class="block mb-1">Observação 
+                  <input type="text" name="observacao" value="{{ t.observacao or '' }}" class="w-full bg-bg-input text-text-secondary border border-border-color rounded-lg px-2 py-2"/>
+                </label>
+              </div>
+              <div class="flex gap-2">
+                <button type="submit" class="bg-btn-primary text-white border-none rounded-lg px-3 py-2 cursor-pointer">Salvar</button>
+                <button type="button" onclick="this.closest('dialog').close()" class="bg-gray-600 text-white border-none rounded-lg px-3 py-2 cursor-pointer">Cancelar</button>
+              </div>
             </div>
           </form>
         </dialog>

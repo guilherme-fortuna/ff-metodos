@@ -1,25 +1,30 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2>Dashboard</h2>
+<h2 class="text-2xl font-bold mb-4">Dashboard</h2>
 
-<div class="card">
-  <form method="get" action="/">
-    <label>Faixa:
-      <select name="faixa">
-        <option value="dia" {% if faixa=='dia' %}selected{% endif %}>Dia</option>
-        <option value="semana" {% if faixa=='semana' %}selected{% endif %}>Semana</option>
-        <option value="mes" {% if faixa=='mes' %}selected{% endif %}>Mês</option>
-        <option value="ano" {% if faixa=='ano' %}selected{% endif %}>Ano</option>
-        <option value="custom" {% if faixa=='custom' %}selected{% endif %}>Custom</option>
-      </select>
-    </label>
-    <label>Início:
-      <input type="date" name="inicio" value="{{ start }}"/>
-    </label>
-    <label>Fim:
-      <input type="date" name="fim" value="{{ end }}"/>
-    </label>
-    <button type="submit">Filtrar</button>
+<div class="bg-bg-secondary border border-border-color rounded-lg p-4 mb-4">
+  <form method="get" action="/" class="space-y-4">
+    <div class="flex flex-wrap gap-4 items-center">
+      <label class="flex items-center gap-2">
+        Faixa:
+        <select name="faixa" class="bg-bg-input text-text-secondary border border-border-color rounded-lg px-2 py-2">
+          <option value="dia" {% if faixa=='dia' %}selected{% endif %}>Dia</option>
+          <option value="semana" {% if faixa=='semana' %}selected{% endif %}>Semana</option>
+          <option value="mes" {% if faixa=='mes' %}selected{% endif %}>Mês</option>
+          <option value="ano" {% if faixa=='ano' %}selected{% endif %}>Ano</option>
+          <option value="custom" {% if faixa=='custom' %}selected{% endif %}>Custom</option>
+        </select>
+      </label>
+      <label class="flex items-center gap-2">
+        Início:
+        <input type="date" name="inicio" value="{{ start }}" class="bg-bg-input text-text-secondary border border-border-color rounded-lg px-2 py-2"/>
+      </label>
+      <label class="flex items-center gap-2">
+        Fim:
+        <input type="date" name="fim" value="{{ end }}" class="bg-bg-input text-text-secondary border border-border-color rounded-lg px-2 py-2"/>
+      </label>
+      <button type="submit" class="bg-btn-primary text-white border-none rounded-lg px-3 py-2 cursor-pointer">Filtrar</button>
+    </div>
   </form>
   <script>
     (function(){
@@ -37,56 +42,71 @@
   </script>
 </div>
 
-<div class="grid">
-  <div class="card"><div class="muted">Depósitos</div><div class="danger"><strong>R$ {{ '%.2f'|format(total_depositos) }}</strong></div></div>
-  <div class="card"><div class="muted">Saques</div><div class="success"><strong>R$ {{ '%.2f'|format(total_saques) }}</strong></div></div>
-  <div class="card"><div class="muted">Saldo</div><div class="{% if saldo>=0 %}success{% else %}danger{% endif %}"><strong>R$ {{ '%.2f'|format(saldo) }}</strong></div></div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+  <div class="bg-bg-secondary border border-border-color rounded-lg p-4">
+    <div class="text-text-muted">Depósitos</div>
+    <div class="text-text-danger"><strong>R$ {{ '%.2f'|format(total_depositos) }}</strong></div>
+  </div>
+  <div class="bg-bg-secondary border border-border-color rounded-lg p-4">
+    <div class="text-text-muted">Saques</div>
+    <div class="text-text-success"><strong>R$ {{ '%.2f'|format(total_saques) }}</strong></div>
+  </div>
+  <div class="bg-bg-secondary border border-border-color rounded-lg p-4">
+    <div class="text-text-muted">Saldo</div>
+    <div class="{% if saldo>=0 %}text-text-success{% else %}text-text-danger{% endif %}"><strong>R$ {{ '%.2f'|format(saldo) }}</strong></div>
+  </div>
 </div>
 
-<div class="card">
-  <h3>Por categoria</h3>
-  <table>
+<div class="bg-bg-secondary border border-border-color rounded-lg p-4 mb-4">
+  <h3 class="text-lg font-semibold mb-3">Por categoria</h3>
+  <table class="w-full border-collapse">
     <thead>
-      <tr><th>Categoria</th><th>Resultado</th></tr>
+      <tr>
+        <th class="border-b border-border-color p-2 text-left">Categoria</th>
+        <th class="border-b border-border-color p-2 text-left">Resultado</th>
+      </tr>
     </thead>
     <tbody>
       {% for nome, total in por_categoria.items() %}
         <tr>
-          <td>{{ nome }}</td>
-          <td class="{% if total>=0 %}success{% else %}danger{% endif %}">R$ {{ '%.2f'|format(total) }}</td>
+          <td class="border-b border-border-color p-2">{{ nome }}</td>
+          <td class="border-b border-border-color p-2 {% if total>=0 %}text-text-success{% else %}text-text-danger{% endif %}">R$ {{ '%.2f'|format(total) }}</td>
         </tr>
       {% endfor %}
     </tbody>
   </table>
 </div>
 
-<div class="card">
-  <h3>Por casa</h3>
-  <table>
+<div class="bg-bg-secondary border border-border-color rounded-lg p-4 mb-4">
+  <h3 class="text-lg font-semibold mb-3">Por casa</h3>
+  <table class="w-full border-collapse">
     <thead>
-      <tr><th>Casa</th><th>Resultado</th></tr>
+      <tr>
+        <th class="border-b border-border-color p-2 text-left">Casa</th>
+        <th class="border-b border-border-color p-2 text-left">Resultado</th>
+      </tr>
     </thead>
     <tbody>
       {% for casa in por_casa %}
         <tr>
-          <td>
+          <td class="border-b border-border-color p-2">
             {% if casa.link %}
-              <a href="{{ casa.link }}" target="_blank">{{ casa.nome }}</a>
+              <a href="{{ casa.link }}" target="_blank" class="text-text-link hover:underline">{{ casa.nome }}</a>
             {% else %}
               {{ casa.nome }}
             {% endif %}
           </td>
-          <td class="{% if casa.total>=0 %}success{% else %}danger{% endif %}">R$ {{ '%.2f'|format(casa.total) }}</td>
+          <td class="border-b border-border-color p-2 {% if casa.total>=0 %}text-text-success{% else %}text-text-danger{% endif %}">R$ {{ '%.2f'|format(casa.total) }}</td>
         </tr>
       {% endfor %}
     </tbody>
   </table>
 </div>
 
-<div class="card">
-  <h3>Gráficos</h3>
+<div class="bg-bg-secondary border border-border-color rounded-lg p-4 mb-4">
+  <h3 class="text-lg font-semibold mb-3">Gráficos</h3>
   <canvas id="chartCategoria" height="120"></canvas>
-  <canvas id="chartCasa" height="120" style="margin-top:16px"></canvas>
+  <canvas id="chartCasa" height="120" class="mt-4"></canvas>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
     (function(){
@@ -107,9 +127,9 @@
   </script>
 </div>
 
-<div class="card">
+<div class="bg-bg-secondary border border-border-color rounded-lg p-4">
   <a href="/export.csv?faixa={{ faixa }}&inicio={{ start }}&fim={{ end }}" target="_blank">
-    <button>Exportar CSV (intervalo atual)</button>
+    <button class="bg-btn-primary text-white border-none rounded-lg px-3 py-2 cursor-pointer">Exportar CSV (intervalo atual)</button>
   </a>
 </div>
 {% endblock %}

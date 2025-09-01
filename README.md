@@ -29,8 +29,7 @@ uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 - `app/main.py`: inicialização, rotas principais e seed de categorias
 - `app/models.py`: modelos SQLModel (`Casa`, `Categoria`, `Transacao`)
 - `app/routers/`: rotas de CRUD e dashboard
-- `app/templates/`: templates Jinja2
-- `app/static/`: estilos
+- `app/templates/`: templates Jinja2 com Tailwind CSS
 
 ## Observação
 O banco SQLite é criado em `data.db` na raiz do projeto.
