@@ -20,9 +20,9 @@ def listar_casas(request: Request):
 
 
 @router.post("/criar")
-def criar_casa(nome: str = Form(...)):
+def criar_casa(nome: str = Form(...), link: str = Form("") ):
     with get_session() as session:
-        casa = Casa(nome=nome.strip())
+        casa = Casa(nome=nome.strip(), link=(link.strip() or None))
         session.add(casa)
         session.commit()
     return RedirectResponse(url="/casas/", status_code=303)

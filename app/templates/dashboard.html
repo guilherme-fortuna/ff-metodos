@@ -21,6 +21,20 @@
     </label>
     <button type="submit">Filtrar</button>
   </form>
+  <script>
+    (function(){
+      const faixa = document.querySelector('select[name="faixa"]');
+      const ini = document.querySelector('input[name="inicio"]');
+      const fim = document.querySelector('input[name="fim"]');
+      function update(){
+        const isCustom = faixa.value === 'custom';
+        ini.disabled = !isCustom;
+        fim.disabled = !isCustom;
+      }
+      faixa.addEventListener('change', update);
+      update();
+    })();
+  </script>
 </div>
 
 <div class="grid">
@@ -40,6 +54,29 @@
         <tr>
           <td>{{ nome }}</td>
           <td class="{% if total>=0 %}success{% else %}danger{% endif %}">R$ {{ '%.2f'|format(total) }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div class="card">
+  <h3>Por casa</h3>
+  <table>
+    <thead>
+      <tr><th>Casa</th><th>Resultado</th></tr>
+    </thead>
+    <tbody>
+      {% for casa in por_casa %}
+        <tr>
+          <td>
+            {% if casa.link %}
+              <a href="{{ casa.link }}" target="_blank">{{ casa.nome }}</a>
+            {% else %}
+              {{ casa.nome }}
+            {% endif %}
+          </td>
+          <td class="{% if casa.total>=0 %}success{% else %}danger{% endif %}">R$ {{ '%.2f'|format(casa.total) }}</td>
         </tr>
       {% endfor %}
     </tbody>

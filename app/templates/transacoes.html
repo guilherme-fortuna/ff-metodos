@@ -3,28 +3,39 @@
 <h2>Transações</h2>
 
 <div class="card">
-  <form method="post" action="/transacoes/criar">
-    <label>Data <input type="date" name="data" required value="{{ now().date() }}"/></label>
-    <label>Tipo
-      <select name="tipo" required>
-        <option value="deposito">Depósito</option>
-        <option value="saque">Saque</option>
-      </select>
-    </label>
-    <label>Valor <input type="number" name="valor" step="0.01" min="0" required /></label>
-    <label>Casa
-      <select name="casa_id" required>
-        {% for c in casas %}<option value="{{ c.id }}">{{ c.nome }}</option>{% endfor %}
-      </select>
-    </label>
-    <label>Categoria
-      <select name="categoria_id" required>
-        {% for c in categorias %}<option value="{{ c.id }}">{{ c.nome }}</option>{% endfor %}
-      </select>
-    </label>
-    <label>Observação <input type="text" name="observacao" placeholder="Opcional"/></label>
-    <button type="submit">Salvar</button>
-  </form>
+  <button onclick="document.getElementById('modal-transacao').showModal()">Nova transação</button>
+  <dialog id="modal-transacao">
+    <form method="post" action="/transacoes/criar">
+      <h3>Nova Transação</h3>
+      <p><label>Data <input type="date" name="data" required value="{{ now().date() }}"/></label></p>
+      <p><label>Tipo
+        <select name="tipo" required>
+          <option value="deposito">Depósito</option>
+          <option value="saque">Saque</option>
+        </select>
+      </label></p>
+      <p><label>Valor <input type="number" name="valor" step="0.01" min="0" required /></label></p>
+      <p><label>Casa
+        <select name="casa_id" required>
+          {% for c in casas %}<option value="{{ c.id }}">{{ c.nome }}</option>{% endfor %}
+        </select>
+      </label></p>
+      <p><label>Categoria
+        <select name="categoria_id" required>
+          {% for c in categorias %}<option value="{{ c.id }}">{{ c.nome }}</option>{% endfor %}
+        </select>
+      </label></p>
+      <p><label>Observação <input type="text" name="observacao" placeholder="Opcional"/></label></p>
+      <div>
+        <button type="submit">Salvar</button>
+        <button type="button" onclick="this.closest('dialog').close()">Cancelar</button>
+      </div>
+    </form>
+  </dialog>
+  <script>
+    const mt = document.getElementById('modal-transacao');
+    mt?.addEventListener('click', (e) => { if (e.target === mt) mt.close(); });
+  </script>
 </div>
 
 <div class="card">

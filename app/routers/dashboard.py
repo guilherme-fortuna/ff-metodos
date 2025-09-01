@@ -9,7 +9,7 @@ from sqlmodel import Session, select
 from sqlalchemy.orm import selectinload
 
 from ..db import get_session
-from ..models import Categoria, Transacao
+from ..models import Categoria, Transacao, Casa
 
 
 router = APIRouter()
@@ -66,6 +66,17 @@ def dashboard(
         nome = categorias.get(t.categoria_id, "Sem categoria")
         por_categoria[nome] = por_categoria.get(nome, 0.0) + (t.valor if t.tipo == "saque" else -t.valor)
 
+    # agregação por casa
+    por_casa_list = []
+    with get_session() as session:
+        casas = {c.id: (c.nome, c.link) for c in session.exec(select(Casa)).all()}
+    casa_totais: Dict[int, float] = {}
+    for t in transacoes:
+        casa_totais[t.casa_id] = casa_totais.get(t.casa_id, 0.0) + (t.valor if t.tipo == "saque" else -t.valor)
+    for cid, total in casa_totais.items():
+        nome, link = casas.get(cid, (f"Casa #{cid}", None))
+        por_casa_list.append({"id": cid, "nome": nome, "link": link, "total": total})
+
     return templates.TemplateResponse(
         "dashboard.html",
         {
@@ -77,6 +88,7 @@ def dashboard(
             "total_saques": total_saques,
             "saldo": saldo,
             "por_categoria": por_categoria,
+            "por_casa": por_casa_list,
         },
     )
 

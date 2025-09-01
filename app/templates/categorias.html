@@ -2,10 +2,21 @@
 {% block content %}
 <h2>Categorias</h2>
 <div class="card">
-  <form method="post" action="/categorias/criar">
-    <input type="text" name="nome" placeholder="Nova categoria" required />
-    <button type="submit">Adicionar</button>
-  </form>
+  <button onclick="document.getElementById('modal-categoria').showModal()">Nova categoria</button>
+  <dialog id="modal-categoria">
+    <form method="post" action="/categorias/criar">
+      <h3>Nova Categoria</h3>
+      <p><input type="text" name="nome" placeholder="Nome" required /></p>
+      <div>
+        <button type="submit">Salvar</button>
+        <button type="button" onclick="this.closest('dialog').close()">Cancelar</button>
+      </div>
+    </form>
+  </dialog>
+  <script>
+    const mcat = document.getElementById('modal-categoria');
+    mcat?.addEventListener('click', (e) => { if (e.target === mcat) mcat.close(); });
+  </script>
 </div>
 <div class="card">
   <table>
