@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Dashboard</h2>
+
+<div class="card">
+  <form method="get" action="/">
+    <label>Faixa:
+      <select name="faixa">
+        <option value="dia" {% if faixa=='dia' %}selected{% endif %}>Dia</option>
+        <option value="semana" {% if faixa=='semana' %}selected{% endif %}>Semana</option>
+        <option value="mes" {% if faixa=='mes' %}selected{% endif %}>Mês</option>
+        <option value="ano" {% if faixa=='ano' %}selected{% endif %}>Ano</option>
+        <option value="custom" {% if faixa=='custom' %}selected{% endif %}>Custom</option>
+      </select>
+    </label>
+    <label>Início:
+      <input type="date" name="inicio" value="{{ start }}"/>
+    </label>
+    <label>Fim:
+      <input type="date" name="fim" value="{{ end }}"/>
+    </label>
+    <button type="submit">Filtrar</button>
+  </form>
+</div>
+
+<div class="grid">
+  <div class="card"><div class="muted">Depósitos</div><div class="danger"><strong>R$ {{ '%.2f'|format(total_depositos) }}</strong></div></div>
+  <div class="card"><div class="muted">Saques</div><div class="success"><strong>R$ {{ '%.2f'|format(total_saques) }}</strong></div></div>
+  <div class="card"><div class="muted">Saldo</div><div class="{% if saldo>=0 %}success{% else %}danger{% endif %}"><strong>R$ {{ '%.2f'|format(saldo) }}</strong></div></div>
+</div>
+
+<div class="card">
+  <h3>Por categoria</h3>
+  <table>
+    <thead>
+      <tr><th>Categoria</th><th>Resultado</th></tr>
+    </thead>
+    <tbody>
+      {% for nome, total in por_categoria.items() %}
+        <tr>
+          <td>{{ nome }}</td>
+          <td class="{% if total>=0 %}success{% else %}danger{% endif %}">R$ {{ '%.2f'|format(total) }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
+
