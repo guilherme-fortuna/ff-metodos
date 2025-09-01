@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Categorias</h2>
+<div class="card">
+  <form method="post" action="/categorias/criar">
+    <input type="text" name="nome" placeholder="Nova categoria" required />
+    <button type="submit">Adicionar</button>
+  </form>
+</div>
+<div class="card">
+  <table>
+    <thead><tr><th>Nome</th><th>Ações</th></tr></thead>
+    <tbody>
+      {% for c in categorias %}
+        <tr>
+          <td>{{ c.nome }}</td>
+          <td>
+            <form method="post" action="/categorias/excluir/{{ c.id }}" onsubmit="return confirm('Excluir categoria?');">
+              <button type="submit">Excluir</button>
+            </form>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
+

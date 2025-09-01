@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Transações</h2>
+
+<div class="card">
+  <form method="post" action="/transacoes/criar">
+    <label>Data <input type="date" name="data" required value="{{ now().date() }}"/></label>
+    <label>Tipo
+      <select name="tipo" required>
+        <option value="deposito">Depósito</option>
+        <option value="saque">Saque</option>
+      </select>
+    </label>
+    <label>Valor <input type="number" name="valor" step="0.01" min="0" required /></label>
+    <label>Casa
+      <select name="casa_id" required>
+        {% for c in casas %}<option value="{{ c.id }}">{{ c.nome }}</option>{% endfor %}
+      </select>
+    </label>
+    <label>Categoria
+      <select name="categoria_id" required>
+        {% for c in categorias %}<option value="{{ c.id }}">{{ c.nome }}</option>{% endfor %}
+      </select>
+    </label>
+    <label>Observação <input type="text" name="observacao" placeholder="Opcional"/></label>
+    <button type="submit">Salvar</button>
+  </form>
+</div>
+
+<div class="card">
+  <table>
+    <thead>
+      <tr><th>Data</th><th>Tipo</th><th>Valor</th><th>Casa ID</th><th>Categoria ID</th><th>Obs</th><th>Ações</th></tr>
+    </thead>
+    <tbody>
+      {% for t in transacoes %}
+        <tr>
+          <td>{{ t.data }}</td>
+          <td>{{ t.tipo }}</td>
+          <td class="{% if t.tipo=='saque' %}success{% else %}danger{% endif %}">R$ {{ '%.2f'|format(t.valor) }}</td>
+          <td>{{ t.casa_id }}</td>
+          <td>{{ t.categoria_id }}</td>
+          <td>{{ t.observacao or '' }}</td>
+          <td>
+            <form method="post" action="/transacoes/excluir/{{ t.id }}" onsubmit="return confirm('Excluir transação?');">
+              <button type="submit">Excluir</button>
+            </form>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
+

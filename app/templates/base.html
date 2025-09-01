@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title or 'Gerenciador de Apostas' }}</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <style>
+        body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Arial, sans-serif; margin: 0; background:#0f172a; color:#e2e8f0; }
+        header { background:#111827; padding:12px 16px; border-bottom:1px solid #1f2937; }
+        header a { color:#e5e7eb; margin-right:16px; text-decoration:none; }
+        header a.active { color:#93c5fd; }
+        .container { padding: 20px; max-width: 1100px; margin: 0 auto; }
+        .card { background:#111827; border:1px solid #1f2937; border-radius:10px; padding:16px; margin-bottom:16px; }
+        input, select { background:#0b1220; color:#e5e7eb; border:1px solid #1f2937; border-radius:8px; padding:8px; }
+        button { background:#2563eb; color:white; border:none; border-radius:8px; padding:8px 12px; cursor:pointer; }
+        table { width:100%; border-collapse: collapse; }
+        th, td { border-bottom:1px solid #1f2937; padding:8px; text-align:left; }
+        .grid { display:grid; gap:12px; grid-template-columns: repeat(3, 1fr); }
+        @media (max-width: 800px) { .grid { grid-template-columns: 1fr; } }
+        .muted { color:#94a3b8; }
+        .success { color:#86efac; }
+        .danger { color:#fca5a5; }
+    </style>
+    {% block head %}{% endblock %}
+  </head>
+  <body>
+    <header>
+      <nav>
+        <a href="/" class="{% if request.url.path == '/' %}active{% endif %}">Dashboard</a>
+        <a href="/transacoes/" class="{% if request.url.path.startswith('/transacoes') %}active{% endif %}">Transações</a>
+        <a href="/casas/" class="{% if request.url.path.startswith('/casas') %}active{% endif %}">Casas</a>
+        <a href="/categorias/" class="{% if request.url.path.startswith('/categorias') %}active{% endif %}">Categorias</a>
+      </nav>
+    </header>
+    <div class="container">
+      {% block content %}{% endblock %}
+    </div>
+  </body>
+  </html>
+
