@@ -10,6 +10,7 @@ from sqlmodel import Field, SQLModel
 class Casa(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     nome: str = Field(sa_column=Column(String, unique=True, nullable=False, index=True))
+    link: Optional[str] = Field(default=None, sa_column=Column(String, nullable=True))
 
     # relações omitidas; consultas farão joins explícitos
 

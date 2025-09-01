@@ -2,18 +2,36 @@
 {% block content %}
 <h2>Casas</h2>
 <div class="card">
-  <form method="post" action="/casas/criar">
-    <input type="text" name="nome" placeholder="Nova casa" required />
-    <button type="submit">Adicionar</button>
-  </form>
+  <button onclick="document.getElementById('modal-casa').showModal()">Nova casa</button>
+  <dialog id="modal-casa">
+    <form method="post" action="/casas/criar">
+      <h3>Nova Casa</h3>
+      <p><input type="text" name="nome" placeholder="Nome" required /></p>
+      <p><input type="url" name="link" placeholder="Link (opcional)" /></p>
+      <div>
+        <button type="submit">Salvar</button>
+        <button type="button" onclick="this.closest('dialog').close()">Cancelar</button>
+      </div>
+    </form>
+  </dialog>
+  <script>
+    // close on backdrop click
+    const mc = document.getElementById('modal-casa');
+    mc?.addEventListener('click', (e) => { if (e.target === mc) mc.close(); });
+  </script>
 </div>
 <div class="card">
   <table>
-    <thead><tr><th>Nome</th><th>Ações</th></tr></thead>
+    <thead><tr><th>Nome</th><th>Link</th><th>Ações</th></tr></thead>
     <tbody>
       {% for c in casas %}
         <tr>
           <td>{{ c.nome }}</td>
+          <td>
+            {% if c.link %}
+              <a href="{{ c.link }}" target="_blank">abrir</a>
+            {% else %}-{% endif %}
+          </td>
           <td>
             <form method="post" action="/casas/excluir/{{ c.id }}" onsubmit="return confirm('Excluir casa?');">
               <button type="submit">Excluir</button>
