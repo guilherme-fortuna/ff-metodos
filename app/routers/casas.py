@@ -37,3 +37,15 @@ def excluir_casa(casa_id: int):
             session.commit()
     return RedirectResponse(url="/casas/", status_code=303)
 
+
+@router.post("/editar/{casa_id}")
+def editar_casa(casa_id: int, nome: str = Form(...), link: str = Form("")):
+    with get_session() as session:
+        casa = session.get(Casa, casa_id)
+        if casa:
+            casa.nome = nome.strip()
+            casa.link = link.strip() or None
+            session.add(casa)
+            session.commit()
+    return RedirectResponse(url="/casas/", status_code=303)
+

@@ -52,12 +52,41 @@
           <td>{{ t.casa_id }}</td>
           <td>{{ t.categoria_id }}</td>
           <td>{{ t.observacao or '' }}</td>
-          <td>
+          <td style="display:flex; gap:8px;">
+            <button type="button" onclick="document.getElementById('edit-transacao-{{ t.id }}').showModal()">Editar</button>
             <form method="post" action="/transacoes/excluir/{{ t.id }}" onsubmit="return confirm('Excluir transação?');">
               <button type="submit">Excluir</button>
             </form>
           </td>
         </tr>
+        <dialog id="edit-transacao-{{ t.id }}">
+          <form method="post" action="/transacoes/editar/{{ t.id }}">
+            <h3>Editar Transação</h3>
+            <p><label>Data <input type="date" name="data" required value="{{ t.data }}"/></label></p>
+            <p><label>Tipo
+              <select name="tipo" required>
+                <option value="deposito" {% if t.tipo=='deposito' %}selected{% endif %}>Depósito</option>
+                <option value="saque" {% if t.tipo=='saque' %}selected{% endif %}>Saque</option>
+              </select>
+            </label></p>
+            <p><label>Valor <input type="number" name="valor" step="0.01" min="0" required value="{{ '%.2f'|format(t.valor) }}"/></label></p>
+            <p><label>Casa
+              <select name="casa_id" required>
+                {% for c in casas %}<option value="{{ c.id }}" {% if c.id==t.casa_id %}selected{% endif %}>{{ c.nome }}</option>{% endfor %}
+              </select>
+            </label></p>
+            <p><label>Categoria
+              <select name="categoria_id" required>
+                {% for c in categorias %}<option value="{{ c.id }}" {% if c.id==t.categoria_id %}selected{% endif %}>{{ c.nome }}</option>{% endfor %}
+              </select>
+            </label></p>
+            <p><label>Observação <input type="text" name="observacao" value="{{ t.observacao or '' }}"/></label></p>
+            <div>
+              <button type="submit">Salvar</button>
+              <button type="button" onclick="this.closest('dialog').close()">Cancelar</button>
+            </div>
+          </form>
+        </dialog>
       {% endfor %}
     </tbody>
   </table>

@@ -32,12 +32,24 @@
               <a href="{{ c.link }}" target="_blank">abrir</a>
             {% else %}-{% endif %}
           </td>
-          <td>
+          <td style="display:flex; gap:8px;">
+            <button type="button" onclick="document.getElementById('edit-casa-{{ c.id }}').showModal()">Editar</button>
             <form method="post" action="/casas/excluir/{{ c.id }}" onsubmit="return confirm('Excluir casa?');">
               <button type="submit">Excluir</button>
             </form>
           </td>
         </tr>
+        <dialog id="edit-casa-{{ c.id }}">
+          <form method="post" action="/casas/editar/{{ c.id }}">
+            <h3>Editar Casa</h3>
+            <p><input type="text" name="nome" value="{{ c.nome }}" required /></p>
+            <p><input type="url" name="link" value="{{ c.link or '' }}" placeholder="Link (opcional)" /></p>
+            <div>
+              <button type="submit">Salvar</button>
+              <button type="button" onclick="this.closest('dialog').close()">Cancelar</button>
+            </div>
+          </form>
+        </dialog>
       {% endfor %}
     </tbody>
   </table>
